@@ -1,48 +1,49 @@
 /** @format */
 
-import { Component } from 'react';
+import { useState } from 'react';
 import { GoSearch } from 'react-icons/go';
+import PropTypes from 'prop-types';
 import { Notify } from 'notiflix';
 import Button from '../button';
 import './style.css';
 
-class Searchbar extends Component {
-	state = {
-		value: '',
-	};
+function Searchbar({ handlerSearch }) {
+	const [value, setValue] = useState('');
 
-	handlerOnSubmit = e => {
+	const handlerOnSubmit = e => {
 		e.preventDefault();
-		if (!this.state.value) {
+		if (!value) {
 			Notify.warning('Search bar is empty.');
 			return;
 		}
-		this.props.handlerSearch(this.state.value);
-		this.setState({ value: '' });
+		handlerSearch(value);
+		setValue('');
 	};
 
-	handerlOnChange = ({ target }) => {
-		this.setState({ value: target.value.trim() });
+	const handerlOnChange = ({ target }) => {
+		setValue(target.value.trim());
 	};
 
-	render() {
-		return (
-			<form className='searbar-container' onSubmit={this.handlerOnSubmit}>
-				<Button type={'submit'} className={'button-search'}>
-					<GoSearch className='icon' />
-				</Button>
-				<input
-					className='input'
-					type='text'
-					onChange={this.handerlOnChange}
-					value={this.state.value}
-					autoComplete='off'
-					autoFocus
-					placeholder='Search images and photos'
-				/>
-			</form>
-		);
-	}
+	return (
+		<form className='searbar-container' onSubmit={handlerOnSubmit}>
+			<Button type={'submit'} className={'button-search'}>
+				<GoSearch className='icon' />
+			</Button>
+			<input
+				className='input'
+				type='text'
+				onChange={handerlOnChange}
+				value={value}
+				autoComplete='off'
+				autoFocus
+				placeholder='Search images and photos'
+			/>
+		</form>
+	);
 }
+
+Searchbar.propTypes = {
+	handlerSearch: PropTypes.func.isRequired,
+};
 
 export default Searchbar;

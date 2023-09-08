@@ -74,6 +74,7 @@ class ImageGallery extends Component {
 						statusComponent: 'resolved',
 						value: perPage,
 					}));
+					Notify.info('Images found: ' + totalHits);
 				})
 				.catch(({ message }) => {
 					this.setState({

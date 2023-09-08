@@ -1,6 +1,6 @@
 /** @format */
 
-import { Component } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import Searchbar from './searchbar';
 import ImageGallery from './gallery';
@@ -8,55 +8,52 @@ import Modal from './modal';
 
 import './style.css';
 
-class App extends Component {
-	state = {
-		searchItem: '',
-		page: 1,
-		isModalShow: false,
-		isNewSearch: false,
-		bigImgShow: '',
+function App() {
+	const [searchItem, setSearchItem] = useState('');
+	const [page] = useState(1);
+	const [isModalShow, setIsModalShow] = useState(false);
+	const [isNewSearch, setIsNewSearch] = useState(false);
+	const [bigImgShow, setBigImgShow] = useState('');
+
+	const handlerChangeSearchValue = value => {
+		setSearchItem(value);
+		setIsNewSearch(true);
 	};
 
-	static propTypes = {
-		bigImgShow: PropTypes.string,
+	const handlerSearchComplete = value => {
+		setIsNewSearch(false);
 	};
 
-	handlerChangeSearchValue = value => {
-		this.setState({ searchItem: value, isNewSearch: true });
+	const handleClick = bigImageSrc => {
+		setIsModalShow(true);
+		setBigImgShow(bigImageSrc);
 	};
 
-	handlerSearchComplete = value => {
-		this.setState({ isNewSearch: false });
+	const handlerCloseModal = () => {
+		setIsModalShow(false);
 	};
 
-	handleClick = bigImageSrc => {
-		this.setState({ isModalShow: true, bigImgShow: bigImageSrc });
-	};
-
-	handlerCloseModal = () => {
-		this.setState(({ isModalShow }) => ({ isModalShow: !isModalShow }));
-	};
-
-	render() {
-		const { isModalShow, searchItem, page, isNewSearch, bigImgShow } = this.state;
-		return (
-			<div className='container'>
-				{isModalShow && (
-					<Modal onClose={this.handlerCloseModal}>
-						<img src={bigImgShow} alt='Big Search Element' />
-					</Modal>
-				)}
-				<Searchbar handlerSearch={this.handlerChangeSearchValue} />
-				<ImageGallery
-					searchItem={searchItem}
-					pageStart={page}
-					isNewSearch={isNewSearch}
-					onClickBigImage={this.handleClick}
-					onSearchCompeted={this.handlerSearchComplete}
-				/>
-			</div>
-		);
-	}
+	return (
+		<div className='container'>
+			{isModalShow && (
+				<Modal onClose={handlerCloseModal}>
+					<img src={bigImgShow} alt='Big Search Element' />
+				</Modal>
+			)}
+			<Searchbar handlerSearch={handlerChangeSearchValue} />
+			<ImageGallery
+				searchItem={searchItem}
+				pageStart={page}
+				isNewSearch={isNewSearch}
+				onClickBigImage={handleClick}
+				onSearchCompeted={handlerSearchComplete}
+			/>
+		</div>
+	);
 }
+
+App.propTypes = {
+	bigImgShow: PropTypes.string,
+};
 
 export default App;
