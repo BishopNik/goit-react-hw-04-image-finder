@@ -10,7 +10,6 @@ import './style.css';
 
 function App() {
 	const [searchItem, setSearchItem] = useState('');
-	const [page] = useState(1);
 	const [isModalShow, setIsModalShow] = useState(false);
 	const [isNewSearch, setIsNewSearch] = useState(false);
 	const [bigImgShow, setBigImgShow] = useState('');
@@ -43,7 +42,6 @@ function App() {
 			<Searchbar handlerSearch={handlerChangeSearchValue} />
 			<ImageGallery
 				searchItem={searchItem}
-				pageStart={page}
 				isNewSearch={isNewSearch}
 				onClickBigImage={handleClick}
 				onSearchCompeted={handlerSearchComplete}
