@@ -71,8 +71,7 @@ function ImageGallery({ searchItem, isNewSearch, onClickBigImage, onSearchCompet
 				setError(message);
 				Notify.failure('Unable to load results. ' + message);
 			});
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [page, searchItem, perPage]);
+	}, [page, searchItem, perPage, prevPerPage]);
 
 	if (statusComponent === 'pending') {
 		return <Loader />;
