@@ -3,7 +3,7 @@
 import PropTypes from 'prop-types';
 import './style.css';
 
-function ImageItem({ srcUrl, tags, dataset, onClick }) {
+function GalleryItem({ srcUrl, tags, dataset, onClick }) {
 	return (
 		<li className='gallery-item' onClick={onClick}>
 			<img className='gallery-img' src={srcUrl} alt={tags} data-largeurl={dataset} />
@@ -11,11 +11,11 @@ function ImageItem({ srcUrl, tags, dataset, onClick }) {
 	);
 }
 
-ImageItem.propTypes = {
+GalleryItem.propTypes = {
 	srcUrl: PropTypes.string.isRequired,
 	tags: PropTypes.string.isRequired,
 	dataset: PropTypes.string.isRequired,
 	onClick: PropTypes.func.isRequired,
 };
 
-export default ImageItem;
+export default GalleryItem;
