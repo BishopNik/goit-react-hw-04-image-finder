@@ -1,6 +1,5 @@
 /** @format */
 
-import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import GalleryItem from '../galleryitem';
 import './style.css';
@@ -30,7 +29,7 @@ Gallery.propTypes = {
 			tags: PropTypes.string.isRequired,
 		})
 	).isRequired,
-	onClickBigImage: PropTypes.func.isRequired,
+	onClickBigImage: PropTypes.func,
 };
 
 export default Gallery;

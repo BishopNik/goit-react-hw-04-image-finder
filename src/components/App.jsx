@@ -1,19 +1,17 @@
 /** @format */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
 	BsFillSkipForwardFill,
 	BsFillSkipBackwardFill,
 	BsArrowRightSquareFill,
 	BsArrowLeftSquareFill,
 } from 'react-icons/bs';
-import PropTypes from 'prop-types';
 import { Notify } from 'notiflix';
 import Searchbar from './searchbar';
 import Gallery from './gallery';
 import Modal from './modal';
 import { fetchImage } from './service/fetch_api';
-import ImageItem from './galleryitem';
 import Button from './button';
 import Loader from './loader';
 import ErrorComponent from './service/error';
@@ -23,7 +21,6 @@ import './style.css';
 function App() {
 	const [searchItem, setSearchItem] = useState('');
 	const [isModalShow, setIsModalShow] = useState(false);
-	const [isNewSearch, setIsNewSearch] = useState(false);
 	const [bigImgShow, setBigImgShow] = useState('');
 	const [value, setValue] = useState('');
 	const [page, setPage] = useState(1);
@@ -34,15 +31,6 @@ function App() {
 	const [countPage, setCountPage] = useState(0);
 	const [statusComponent, setStatusComponent] = useState(null);
 	const [error, setError] = useState(null);
-
-	useEffect(() => {
-		if (!isNewSearch) {
-			return;
-		}
-		setPage(1);
-		setPerPage(12);
-		onSearchCompeted();
-	}, [isNewSearch, onSearchCompeted]);
 
 	useEffect(() => {
 		setPage(1);
@@ -73,6 +61,7 @@ function App() {
 				setFoundImages(foundImages);
 				setCountPage(Math.ceil(totalHits / perPage));
 				setStatusComponent('resolved');
+				console.log('return');
 			})
 			.catch(({ message }) => {
 				setStatusComponent('rejected');
@@ -83,7 +72,7 @@ function App() {
 
 	const handlerChangeSearchValue = value => {
 		setSearchItem(value);
-		setIsNewSearch(true);
+		setPage(1);
 	};
 
 	const handleClick = bigImageSrc => {
