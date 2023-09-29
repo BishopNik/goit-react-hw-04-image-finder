@@ -15,8 +15,9 @@ import { fetchImage } from './service/fetch_api';
 import Button from './button';
 import Loader from './loader';
 import ErrorComponent from './service/error';
-
 import './style.css';
+
+import { debounce } from 'lodash';
 
 function App() {
 	const [searchItem, setSearchItem] = useState('');
@@ -25,7 +26,6 @@ function App() {
 	const [value, setValue] = useState('');
 	const [page, setPage] = useState(1);
 	const [perPage, setPerPage] = useState(12);
-	const [prevPerPage, setPrevPerPage] = useState('');
 	const [foundImages, setFoundImages] = useState([]);
 	const [totalImages, setTotalImages] = useState(0);
 	const [countPage, setCountPage] = useState(0);
@@ -34,7 +34,6 @@ function App() {
 
 	useEffect(() => {
 		setPage(1);
-		setPrevPerPage(perPage);
 	}, [perPage]);
 
 	useEffect(() => {
@@ -46,7 +45,7 @@ function App() {
 
 		fetchImage({
 			searchItem,
-			page: prevPerPage !== perPage ? 1 : page,
+			page,
 			perPage,
 		})
 			.then(({ hits, totalHits }) => {
@@ -61,14 +60,13 @@ function App() {
 				setFoundImages(foundImages);
 				setCountPage(Math.ceil(totalHits / perPage));
 				setStatusComponent('resolved');
-				console.log('return');
 			})
 			.catch(({ message }) => {
 				setStatusComponent('rejected');
 				setError(message);
 				Notify.failure('Unable to load results. ' + message);
 			});
-	}, [page, searchItem, perPage, prevPerPage]);
+	}, [page, searchItem, perPage]);
 
 	const handlerChangeSearchValue = value => {
 		setSearchItem(value);
@@ -82,6 +80,15 @@ function App() {
 
 	const handlerCloseModal = () => {
 		setIsModalShow(false);
+	};
+
+	const setCountGallaryItem = debounce(() => {
+		console.log('debounce', Date.now());
+		setPerPage(parseInt(value));
+	}, 1000);
+
+	const handlerSubmitCountItem = () => {
+		setCountGallaryItem();
 	};
 
 	return (
@@ -109,9 +116,10 @@ function App() {
 											type='number'
 											className='page-item'
 											value={value}
-											min={1}
+											min={2}
 											max={totalImages >= 200 ? 200 : totalImages}
-											onChange={({ target }) => setValue(target.value.trim())}
+											onInput={({ target }) => setValue(target.value.trim())}
+											onChange={handlerSubmitCountItem}
 											onKeyDown={e => {
 												if (e.key === 'Enter') {
 													e.preventDefault();
