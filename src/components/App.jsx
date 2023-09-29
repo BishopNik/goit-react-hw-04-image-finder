@@ -1,6 +1,6 @@
 /** @format */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
 	BsFillSkipForwardFill,
 	BsFillSkipBackwardFill,
@@ -82,13 +82,14 @@ function App() {
 		setIsModalShow(false);
 	};
 
-	const setCountGallaryItem = debounce(() => {
-		console.log('debounce', Date.now());
+	const setCountGallaryItem = value => {
 		setPerPage(parseInt(value));
-	}, 1000);
+	};
 
-	const handlerSubmitCountItem = () => {
-		setCountGallaryItem();
+	const debouncedSetCountGallaryItem = useMemo(() => debounce(setCountGallaryItem, 1000), []);
+
+	const handlerSubmitCountItem = ({ target }) => {
+		debouncedSetCountGallaryItem(target.value.trim());
 	};
 
 	return (

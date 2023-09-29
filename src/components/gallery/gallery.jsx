@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import GalleryItem from '../galleryitem';
 import './style.css';
 
-function Gallery({ images, onClickBigImage }) {
+function Gallery({ images, onClick }) {
 	return (
 		<ul className='gallery-container'>
 			{images.map(item => (
@@ -13,7 +13,7 @@ function Gallery({ images, onClickBigImage }) {
 					srcUrl={item.webformatURL}
 					dataset={item.largeImageURL}
 					tags={item.tags}
-					onClick={({ target }) => onClickBigImage(target.dataset.largeurl)}
+					onClick={({ target }) => onClick(target.dataset.largeurl)}
 				/>
 			))}
 		</ul>
@@ -29,7 +29,7 @@ Gallery.propTypes = {
 			tags: PropTypes.string.isRequired,
 		})
 	).isRequired,
-	onClickBigImage: PropTypes.func,
+	onClick: PropTypes.func,
 };
 
 export default Gallery;
