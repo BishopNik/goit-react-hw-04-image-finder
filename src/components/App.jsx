@@ -1,7 +1,10 @@
 /** @format */
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
+// import { useMemo } from 'react';
 import { Notify } from 'notiflix';
+import { nanoid } from 'nanoid';
+import useDebounce from './service/useDebounce';
 import Searchbar from './searchbar';
 import Gallery from './gallery';
 import Modal from './modal';
@@ -11,7 +14,7 @@ import ErrorComponent from './service/error';
 import Pagination from './pagination';
 import './style.css';
 
-import { debounce } from 'lodash';
+// import { debounce } from 'lodash';
 
 function App() {
 	const [searchItem, setSearchItem] = useState('');
@@ -25,10 +28,11 @@ function App() {
 	const [countPage, setCountPage] = useState(0);
 	const [statusComponent, setStatusComponent] = useState(null);
 	const [error, setError] = useState(null);
+	const [newSearch, setNewSearch] = useState(nanoid());
 
-	useEffect(() => {
-		setPage(1);
-	}, [perPage]);
+	// useEffect(() => {
+	// 	setPage(1);
+	// }, [perPage]);
 
 	useEffect(() => {
 		if (!searchItem) {
@@ -60,7 +64,8 @@ function App() {
 				setError(message);
 				Notify.failure('Unable to load results. ' + message);
 			});
-	}, [page, searchItem, perPage]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [page, searchItem, newSearch]);
 
 	const handlerChangeSearchValue = value => {
 		setSearchItem(value);
@@ -76,15 +81,27 @@ function App() {
 		setIsModalShow(false);
 	};
 
-	const setCountGallaryItem = value => {
-		setPerPage(parseInt(value));
-	};
+	// const setCountGallaryItem = value => {
+	// 	setPerPage(parseInt(value));
+	// };
 
-	const debouncedSetCountGallaryItem = useMemo(() => debounce(setCountGallaryItem, 1000), []);
+	// const debouncedSetCountGallaryItem = useMemo(() => debounce(setCountGallaryItem, 1000), []);
+
+	// const handlerSubmitCountItem = ({ target }) => {
+	// 	debouncedSetCountGallaryItem(target.value.trim());
+	// };
 
 	const handlerSubmitCountItem = ({ target }) => {
-		debouncedSetCountGallaryItem(target.value.trim());
+		setPerPage(parseInt(target.value.trim()));
 	};
+
+	const debouncedValue = useDebounce(perPage, 1000);
+
+	useEffect(() => {
+		setPage(1);
+		setNewSearch(nanoid());
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [debouncedValue]);
 
 	const onChangeInput = ({ target }) => setValue(target.value.trim());
 

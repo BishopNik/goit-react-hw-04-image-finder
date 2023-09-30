@@ -29,7 +29,7 @@ function Pagination({
 						type='number'
 						className='page-item'
 						value={value}
-						min={2}
+						min={3}
 						max={totalImages >= 200 ? 200 : totalImages}
 						onInput={onChangeInput}
 						onChange={handlerSubmitCountItem}
