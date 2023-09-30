@@ -1,20 +1,14 @@
 /** @format */
 
 import { useState, useEffect, useMemo } from 'react';
-import {
-	BsFillSkipForwardFill,
-	BsFillSkipBackwardFill,
-	BsArrowRightSquareFill,
-	BsArrowLeftSquareFill,
-} from 'react-icons/bs';
 import { Notify } from 'notiflix';
 import Searchbar from './searchbar';
 import Gallery from './gallery';
 import Modal from './modal';
 import { fetchImage } from './service/fetch_api';
-import Button from './button';
 import Loader from './loader';
 import ErrorComponent from './service/error';
+import Pagination from './pagination';
 import './style.css';
 
 import { debounce } from 'lodash';
@@ -92,6 +86,46 @@ function App() {
 		debouncedSetCountGallaryItem(target.value.trim());
 	};
 
+	const onChangeInput = ({ target }) => setValue(target.value.trim());
+
+	const onChangePerPage = e => {
+		if (e.key === 'Enter') {
+			e.preventDefault();
+			if (value) {
+				setPerPage(parseInt(value));
+			}
+		}
+	};
+
+	const onClickFirstPageButton = () => {
+		setPage(1);
+		Notify.info('First page');
+	};
+
+	const onClickLastPageButton = () => {
+		setPage(countPage);
+		Notify.info('Last page');
+	};
+
+	const onClickChangePage = pg => {
+		switch (pg) {
+			case -1:
+				if (page > 1) {
+					setPage(page => page - 1);
+				} else Notify.info('First page');
+				break;
+
+			case 1:
+				if (page < perPage) {
+					setPage(page => page + pg);
+				} else Notify.info('Last page');
+				break;
+
+			default:
+				break;
+		}
+	};
+
 	return (
 		<div className='container'>
 			{isModalShow && (
@@ -109,83 +143,19 @@ function App() {
 					{foundImages.length > 0 ? (
 						<>
 							<Gallery images={foundImages} onClick={handleClick} />
-							<div className='status-container'>
-								{page > 0 && countPage > 0 && (
-									<div className='page-stat'>
-										<p className='page-count'>item in page:</p>
-										<input
-											type='number'
-											className='page-item'
-											value={value}
-											min={2}
-											max={totalImages >= 200 ? 200 : totalImages}
-											onInput={({ target }) => setValue(target.value.trim())}
-											onChange={handlerSubmitCountItem}
-											onKeyDown={e => {
-												if (e.key === 'Enter') {
-													e.preventDefault();
-													if (value) {
-														setPerPage(parseInt(value));
-													}
-												}
-											}}
-										/>
-										<div className='page-count'>
-											page: {page} / {countPage}
-										</div>
-									</div>
-								)}
-								{countPage > 1 && (
-									<>
-										<Button
-											className={'loadmore'}
-											type={'button'}
-											onClick={() => {
-												setPage(1);
-												Notify.info('First page');
-											}}
-										>
-											<BsFillSkipBackwardFill />
-										</Button>
-										<Button
-											className={'loadmore'}
-											type={'button'}
-											onClick={() => {
-												if (page > 1) {
-													setPage(page => page - 1);
-												} else Notify.info('First page');
-											}}
-										>
-											<BsArrowLeftSquareFill />
-										</Button>
-										{page !== countPage && (
-											<>
-												<Button
-													className={'loadmore'}
-													type={'button'}
-													onClick={() => {
-														if (page < perPage) {
-															setPage(page => page + 1);
-														} else Notify.info('Last page');
-													}}
-												>
-													<BsArrowRightSquareFill />
-												</Button>
-												<Button
-													className={'loadmore'}
-													type={'button'}
-													onClick={() => {
-														setPage(countPage);
-														Notify.info('Last page');
-													}}
-												>
-													<BsFillSkipForwardFill />
-												</Button>
-											</>
-										)}
-									</>
-								)}
-							</div>
+							<Pagination
+								page={page}
+								countPage={countPage}
+								perPage={perPage}
+								totalImages={totalImages}
+								value={value}
+								onChangeInput={onChangeInput}
+								handlerSubmitCountItem={handlerSubmitCountItem}
+								onChangePerPage={onChangePerPage}
+								onClickFirstPageButton={onClickFirstPageButton}
+								onClickLastPageButton={onClickLastPageButton}
+								onClickChangePage={onClickChangePage}
+							/>
 						</>
 					) : (
 						<ErrorComponent>

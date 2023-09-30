@@ -8,24 +8,22 @@ import './style.css';
 const modalPortal = document.querySelector('#modal-root');
 
 function Modal({ onClose, children }) {
-	useEffect(() => {
-		const onCloseModal = ({ target, key }) => {
-			if (target.tagName !== 'IMG' || key === 'Escape') {
-				onClose();
-			}
-		};
+	const onCloseModal = ({ target, key }) => {
+		if (target.tagName !== 'IMG' || key === 'Escape') {
+			onClose();
+		}
+	};
 
-		document.addEventListener('click', onCloseModal);
+	useEffect(() => {
 		document.addEventListener('keydown', onCloseModal);
 
 		return () => {
-			document.removeEventListener('click', onCloseModal);
 			document.removeEventListener('keydown', onCloseModal);
 		};
 	}, [onClose]);
 
 	return createPortal(
-		<div className='overlay'>
+		<div className='overlay' onClick={onCloseModal}>
 			<div className='modal'>{children}</div>
 		</div>,
 		modalPortal
