@@ -133,7 +133,7 @@ function App() {
 				break;
 
 			case 1:
-				if (page < perPage) {
+				if (page < countPage) {
 					setPage(page => page + pg);
 				} else Notify.info('Last page');
 				break;
